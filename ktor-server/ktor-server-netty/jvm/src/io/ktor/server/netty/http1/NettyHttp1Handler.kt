@@ -18,8 +18,9 @@ import java.io.*
 import kotlin.coroutines.*
 
 internal class NettyHttp1Handler(
+    private val applicationProvider: () -> Application,
     private val enginePipeline: EnginePipeline,
-    private val environment: ApplicationEngineEnvironment,
+    private val environment: ApplicationEnvironment,
     private val callEventGroup: EventExecutorGroup,
     private val engineContext: CoroutineContext,
     private val userContext: CoroutineContext,
@@ -86,7 +87,7 @@ internal class NettyHttp1Handler(
     @Suppress("OverridingDeprecatedMember")
     override fun exceptionCaught(context: ChannelHandlerContext, cause: Throwable) {
         if (cause is IOException || cause is ChannelIOException) {
-            environment.application.log.debug("I/O operation failed", cause)
+            environment.log.debug("I/O operation failed", cause)
             handlerJob.cancel()
         } else {
             handlerJob.completeExceptionally(cause)
@@ -126,7 +127,7 @@ internal class NettyHttp1Handler(
         }
 
         return NettyHttp1ApplicationCall(
-            environment.application,
+            applicationProvider(),
             context,
             message,
             requestBodyChannel,
