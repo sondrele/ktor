@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.http.parsing.*
 import io.ktor.util.*
 import io.ktor.utils.io.*
+import io.ktor.utils.io.InternalAPI
 import io.ktor.utils.io.charsets.*
 
 private val TOKEN_EXTRA = setOf('!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~')

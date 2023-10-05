@@ -45,18 +45,8 @@ internal fun onBodyChunkReceived(
 
     val chunkSize = (size * count).toInt()
 
-    // TODO: delete `runBlocking` with fix of https://youtrack.jetbrains.com/issue/KTOR-6030/Migrate-to-new-kotlinx.io-library
-    val written = try {
-        runBlocking {
-            body.writeFully(buffer, 0, chunkSize)
-        }
-        chunkSize
-    } catch (cause: Throwable) {
-        return -1
-    }
-    if (written > 0) {
-        wrapper.bytesWritten += written
-    }
+    body.writablePacket.writeFully(buffer, 0, chunkSize)
+    wrapper.bytesWritten += chunkSize
     if (wrapper.bytesWritten.value == chunkSize) {
         wrapper.bytesWritten.value = 0
         return chunkSize
@@ -88,16 +78,9 @@ internal fun onBodyChunkRequested(
     if (body.isClosedForRead) {
         return if (body.closedCause != null) -1 else 0
     }
-    @Suppress("DEPRECATION")
-    val readCount = try {
-        body.readAvailable(1) { source: Buffer ->
-            source.readAvailable(buffer, 0, requested)
-        }
-    } catch (cause: Throwable) {
-        return -1
-    }
-    if (readCount > 0) {
-        return readCount
+    val count = body.readablePacket.readAvailable(buffer, 0, requested)
+    if (count > 0) {
+        return count
     }
 
     CoroutineScope(wrapper.callContext).launch {

@@ -5,7 +5,6 @@
 package io.ktor.client.network.sockets
 
 import io.ktor.client.request.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.errors.*
 
 /**
@@ -24,9 +23,6 @@ public actual class SocketTimeoutException actual constructor(
     cause: Throwable?
 ) : IOException(message, cause)
 
-/**
- * Creates [ByteChannel] that maps close exceptions (close the channel with [SocketTimeoutException] if asked to
- * close it with [SocketTimeoutException]).
- */
-@Suppress("DEPRECATION")
-internal actual fun ByteChannelWithMappedExceptions(request: HttpRequestData): ByteChannel = ByteChannel()
+internal actual val timeoutExceptionMapper: (HttpRequestData) -> ((Throwable?) -> Throwable?) = { request ->
+    { it }
+}

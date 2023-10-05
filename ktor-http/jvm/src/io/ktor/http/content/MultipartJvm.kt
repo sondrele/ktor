@@ -11,6 +11,7 @@ import io.ktor.utils.io.core.*
 import io.ktor.utils.io.pool.*
 import kotlinx.coroutines.*
 import java.io.*
+import java.nio.*
 
 /**
  * Provides file item's content as an [InputStream]
@@ -24,7 +25,7 @@ private class MultipartInput(
     private val channel: ByteReadChannel
 ) : Input() {
 
-    override fun fill(destination: Memory, offset: Int, length: Int): Int {
+    override fun fill(destination: ByteBuffer, offset: Int, length: Int): Int {
         return runBlocking {
             val buffer = ByteArrayPool.borrow()
             try {

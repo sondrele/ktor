@@ -81,7 +81,7 @@ public interface Configuration {
     )
 }
 
-@InternalAPI
+@io.ktor.utils.io.InternalAPI
 public suspend fun List<ContentConverter>.deserialize(
     body: ByteReadChannel,
     typeInfo: TypeInfo,

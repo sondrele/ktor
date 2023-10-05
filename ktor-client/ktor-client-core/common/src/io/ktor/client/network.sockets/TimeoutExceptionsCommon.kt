@@ -21,6 +21,8 @@ public expect class ConnectTimeoutException(message: String, cause: Throwable? =
  */
 public expect class SocketTimeoutException(message: String, cause: Throwable? = null) : IOException
 
+internal expect val timeoutExceptionMapper: (HttpRequestData) -> ((Throwable?) -> Throwable?)
+
 /**
  * Returns [ByteReadChannel] with [ByteChannel.close] handler that returns [SocketTimeoutException] instead of
  * [SocketTimeoutException].
@@ -31,18 +33,8 @@ public fun CoroutineScope.mapEngineExceptions(input: ByteReadChannel, request: H
         return input
     }
 
-    val replacementChannel = ByteChannelWithMappedExceptions(request)
-
-    @Suppress("DEPRECATION")
-    writer(channel = replacementChannel) {
-        try {
-            input.copyAndClose(replacementChannel)
-        } catch (cause: Throwable) {
-            input.cancel(cause)
-        }
-    }
-
-    return replacementChannel
+    val mapper = timeoutExceptionMapper(request)
+    return input.mapExceptions(mapper)
 }
 
 /**
@@ -55,23 +47,6 @@ public fun CoroutineScope.mapEngineExceptions(output: ByteWriteChannel, request:
         return output
     }
 
-    val replacementChannel = ByteChannelWithMappedExceptions(request)
-
-    @Suppress("DEPRECATION")
-    writer(channel = replacementChannel) {
-        try {
-            replacementChannel.copyAndClose(output)
-        } catch (cause: Throwable) {
-            replacementChannel.close(cause)
-        }
-    }
-
-    return replacementChannel
+    val mapper = timeoutExceptionMapper(request)
+    return output.mapExceptions(mapper)
 }
-
-/**
- * Creates [ByteChannel] that maps close exceptions (close the channel with [SocketTimeoutException] if asked to
- * close it with [SocketTimeoutException]).
- */
-@Suppress("DEPRECATION")
-internal expect fun ByteChannelWithMappedExceptions(request: HttpRequestData): ByteChannel

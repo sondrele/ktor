@@ -551,6 +551,7 @@ public abstract class Input(
         throw EOFException("Not enough data in packet ($remaining) to read $n byte(s)")
     }
 
+    @PublishedApi
     internal fun prepareReadHead(minSize: Int): ChunkBuffer? = prepareReadLoop(minSize, head)
 
     internal fun ensureNextHead(current: ChunkBuffer): ChunkBuffer? = ensureNext(current)
