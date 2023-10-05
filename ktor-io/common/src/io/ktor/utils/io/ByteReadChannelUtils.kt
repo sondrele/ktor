@@ -406,7 +406,7 @@ public suspend fun ByteReadChannel.joinTo(dst: ByteWriteChannel, closeOnEnd: Boo
             dst.writePacket(readablePacket)
         }
     } catch (cause: Throwable) {
-        dst.close(cause)
+        dst.cancel(cause)
         throw cause
     } finally {
         if (closeOnEnd) dst.close()
@@ -435,7 +435,7 @@ public suspend fun ByteReadChannel.copyTo(dst: ByteWriteChannel, limit: Long = L
 
         return limit - remaining
     } catch (cause: Throwable) {
-        dst.close(cause)
+        dst.cancel(cause)
         throw cause
     }
 }

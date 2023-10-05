@@ -285,7 +285,8 @@ internal class CurlMultiApiHandler : Closeable {
                 collectFailedResponse(message, responseBuilder.request, result, httpStatusCode.value)
                     ?: collectSuccessResponse(easyHandle)!!
             } finally {
-                responseBuilder.bodyChannel.close(null)
+//                responseBuilder.bodyChannel.close()
+                TODO("Replace response builder with channel producer")
                 responseBuilder.headersBytes.release()
             }
         } finally {

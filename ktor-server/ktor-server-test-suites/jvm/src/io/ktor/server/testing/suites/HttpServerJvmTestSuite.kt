@@ -86,7 +86,7 @@ abstract class HttpServerJvmTestSuite<TEngine : ApplicationEngine, TConfiguratio
                     }
                     byteStream.writePacket(call.receiveChannel().readRemaining())
                     byteStream.writeStringUtf8("\n")
-                    byteStream.close(null)
+                    byteStream.close()
                 }
 
                 call.respond(object : OutgoingContent.ReadChannelContent() {

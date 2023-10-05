@@ -84,11 +84,10 @@ internal class JavaHttpResponseBodyHandler(
                         }
                     }
                 } catch (_: ClosedReceiveChannelException) {
-                }
-            }.apply {
-                invokeOnCompletion {
-                    responseChannel.close(it)
-                    consumerJob.complete()
+                } catch (cause: Throwable) {
+                    responseChannel.cancel(cause)
+                } finally {
+                    responseChannel.close()
                 }
             }
         }

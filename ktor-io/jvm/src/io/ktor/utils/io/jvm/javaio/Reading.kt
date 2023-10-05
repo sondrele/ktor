@@ -1,7 +1,6 @@
 package io.ktor.utils.io.jvm.javaio
 
 import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
 import io.ktor.utils.io.pool.*
 import kotlinx.coroutines.*
 import java.io.*
@@ -61,8 +60,9 @@ public fun InputStream.toByteReadChannel(
             channel.writeFully(buffer)
         }
     } catch (cause: Throwable) {
-        channel.close(cause)
+        channel.cancel(cause)
     } finally {
+        channel.close()
         pool.recycle(buffer)
         close()
     }
@@ -90,7 +90,7 @@ public fun InputStream.toByteReadChannel(
             channel.writeFully(buffer, 0, readCount)
         }
     } catch (cause: Throwable) {
-        channel.close(cause)
+        channel.cancel(cause)
     } finally {
         pool.recycle(buffer)
         close()

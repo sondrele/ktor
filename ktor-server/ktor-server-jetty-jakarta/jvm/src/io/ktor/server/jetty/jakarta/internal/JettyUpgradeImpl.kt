@@ -50,11 +50,13 @@ public object JettyUpgradeImpl : ServletUpgrade {
                         coroutineContext,
                         coroutineContext + userContext
                     )
-
-                    upgradeJob.invokeOnCompletion {
-                        inputChannel.cancel()
-                        outputChannel.close()
-                        cancel()
+                    launch {
+                        try {
+                            upgradeJob.join()
+                        } finally {
+                            inputChannel.cancel()
+                            outputChannel.close()
+                        }
                     }
                 }
             } finally {

@@ -22,6 +22,7 @@ internal class ConflatedByteChannel : ByteChannel {
 
     override val closedCause: Throwable?
         get() = TODO("Not yet implemented")
+
     override val totalBytesRead: Long
         get() = TODO("Not yet implemented")
 
@@ -42,11 +43,11 @@ internal class ConflatedByteChannel : ByteChannel {
     override val totalBytesWritten: Long
         get() = TODO("Not yet implemented")
 
-    override fun close(cause: Throwable?): Boolean {
+    override suspend fun close() {
         TODO("Not yet implemented")
     }
 
-    override fun flush() {
+    override suspend fun flush() {
         TODO("Not yet implemented")
     }
 }

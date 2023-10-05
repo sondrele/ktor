@@ -93,7 +93,7 @@ private class ServletReader(val input: ServletInputStream, val contentLength: In
     override fun onError(t: Throwable) {
         val wrappedException = wrapException(t)
 
-        channel.close(wrappedException)
+        channel.cancel(wrappedException)
         events.close(wrappedException)
     }
 

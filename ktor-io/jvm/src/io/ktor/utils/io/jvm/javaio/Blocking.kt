@@ -8,7 +8,7 @@ import io.ktor.utils.io.*
 import kotlinx.atomicfu.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.CancellationException
-import org.slf4j.LoggerFactory
+import org.slf4j.*
 import java.io.*
 import kotlin.coroutines.*
 import kotlin.coroutines.intrinsics.*
@@ -93,15 +93,13 @@ private class OutputAdapter(parent: Job?, private val channel: ByteWriteChannel)
                         channel.closedCause?.let { throw it }
                     } else if (task is ByteArray) channel.writeFully(task, offset, length)
                 }
-            } catch (t: Throwable) {
-                if (t !is CancellationException) {
-                    channel.close(t)
+            } catch (cause: Throwable) {
+                if (cause !is CancellationException) {
+                    channel.cancel(cause)
                 }
-                throw t
+                throw cause
             } finally {
-                if (!channel.close()) {
-                    channel.closedCause?.let { throw it }
-                }
+                channel.close()
             }
         }
     }

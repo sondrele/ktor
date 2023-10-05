@@ -62,24 +62,20 @@ public fun ByteReadChannel.copyToBoth(first: ByteWriteChannel, second: ByteWrite
                         second.writePacket(it.copy())
                     } catch (cause: Throwable) {
                         this@copyToBoth.cancel(cause)
-                        first.close(cause)
-                        second.close(cause)
+                        first.cancel(cause)
+                        second.cancel(cause)
                     }
                 }
             }
 
             closedCause?.let { throw it }
         } catch (cause: Throwable) {
-            first.close(cause)
-            second.close(cause)
+            first.cancel(cause)
+            second.cancel(cause)
         } finally {
             first.close()
             second.close()
         }
-    }.invokeOnCompletion {
-        it ?: return@invokeOnCompletion
-        first.close(it)
-        second.close(it)
     }
 }
 

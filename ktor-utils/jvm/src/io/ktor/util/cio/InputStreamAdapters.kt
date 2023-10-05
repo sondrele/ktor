@@ -34,7 +34,7 @@ public fun InputStream.toByteReadChannel(
             channel.writeFully(buffer)
         }
     } catch (cause: Throwable) {
-        channel.close(cause)
+        channel.cancel(cause)
     } finally {
         pool.recycle(buffer)
         close()

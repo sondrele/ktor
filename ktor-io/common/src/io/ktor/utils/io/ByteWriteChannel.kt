@@ -32,32 +32,19 @@ public interface ByteWriteChannel {
     public val closedCause: Throwable?
 
     /**
-     * Closes this channel with an optional exceptional [cause].
-     * It flushes all pending write bytes (via [flush]).
-     * This is an idempotent operation -- repeated invocations of this function have no effect and return `false`.
-     *
-     * A channel that was closed without a [cause], is considered to be _closed normally_.
-     * A channel that was closed with non-null [cause] is called a _failed channel_. Attempts to read or
-     * write on a failed channel throw this cause exception.
-     *
-     * After invocation of this operation [isClosedForWrite] starts returning `true` and
-     * all subsequent write operations throw [ClosedWriteChannelException] or the specified [cause].
-     * However, [isClosedForRead][ByteReadChannel.isClosedForRead] on the side of [ByteReadChannel]
-     * starts returning `true` only after all written bytes have been read.
-     *
-     * Please note that if the channel has been closed with cause and it has been provided by [reader] or [writer]
-     * coroutine then the corresponding coroutine will be cancelled with [cause]. If no [cause] provided then no
-     * cancellation will be propagated.
+     * Flush all pending bytes and close the channel
      */
-    public fun close(cause: Throwable? = null): Boolean
+    public suspend fun close()
 
     /**
-     * Flushes all pending write bytes making them available for read.
-     *
-     * This function is thread-safe and can be invoked in any thread at any time.
-     * It does nothing when invoked on a closed channel.
+     * Discard all not flushed bytes and close the channel
      */
-    public fun flush()
+    public fun cancel(cause: Throwable?): Boolean
+
+    /**
+     * Flushes all available bytes to the channel's destination.
+     */
+    public suspend fun flush()
 }
 
 /**

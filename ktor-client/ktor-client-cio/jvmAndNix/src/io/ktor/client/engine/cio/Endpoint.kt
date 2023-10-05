@@ -89,7 +89,7 @@ internal class Endpoint(
         deliveryPoint.send(task)
     }
 
-    @OptIn(InternalAPI::class)
+    @OptIn(InternalAPI::class, InternalCoroutinesApi::class)
     private suspend fun makeDedicatedRequest(
         request: HttpRequestData,
         callContext: CoroutineContext
@@ -104,15 +104,21 @@ internal class Endpoint(
                 config.endpoint.allowHalfClose
             )
 
-            callContext[Job]!!.invokeOnCompletion { cause ->
+
+            launch {
+                val job = callContext.job
+                job.join()
+
+                val cause: Throwable? = if (job.isCancelled) job.getCancellationException() else null
                 val originCause = cause?.unwrapCancellationException()
-                try {
-                    input.cancel(originCause)
-                    originOutput.close(originCause)
-                    connection.socket.close()
-                    releaseConnection()
-                } catch (_: Throwable) {
+                if (originCause == null) {
+                    originOutput.close()
+                } else {
+                    originOutput.cancel(originCause)
                 }
+                input.cancel(originCause)
+                connection.socket.close()
+                releaseConnection()
             }
 
             val timeout = getRequestTimeout(request, config)

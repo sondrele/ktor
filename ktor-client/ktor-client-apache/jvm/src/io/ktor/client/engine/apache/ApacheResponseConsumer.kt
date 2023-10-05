@@ -53,7 +53,6 @@ internal class ApacheResponseConsumer(
             channel.writeAvailable {
                 result = decoder.read(it)
             }
-            channel.flush()
         } while (result > 0)
 
         if (result < 0 || decoder.isCompleted) {
@@ -87,8 +86,10 @@ internal class ApacheResponseConsumer(
     }
 
     override fun close() {
-        channel.close()
-        consumerJob.complete()
+        launch {
+            channel.close()
+            consumerJob.complete()
+        }
     }
 
     override fun getException(): Exception? = channel.closedCause as? Exception
@@ -105,5 +106,5 @@ internal class ApacheResponseConsumer(
         responseDeferred.complete(response)
     }
 
-    public suspend fun waitForResponse(): HttpResponse = responseDeferred.await()
+    suspend fun waitForResponse(): HttpResponse = responseDeferred.await()
 }

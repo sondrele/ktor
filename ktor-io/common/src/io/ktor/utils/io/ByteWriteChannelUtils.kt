@@ -9,6 +9,16 @@ import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import kotlin.math.*
 
+public fun ByteWriteChannel.cancel(): Boolean = cancel(null)
+
+@Deprecated(
+    "Close with exception is deprecated. Use cancel instead.",
+    level = DeprecationLevel.WARNING,
+    replaceWith = ReplaceWith("cancel(cause)")
+)
+public fun ByteWriteChannel.close(cause: Throwable) {
+    cancel(cause)
+}
 
 /**
  * Returns number of bytes that can be written without suspension. Write operations do no suspend and return
@@ -253,26 +263,30 @@ public suspend fun ByteWriteChannel.writePacketSuspend(builder: suspend BytePack
 public fun ByteWriteChannel.mapExceptions(
     block: (Throwable?) -> Throwable?
 ): ByteWriteChannel = object : ByteWriteChannel {
-        override val maxSize: Int
-            get() = this@mapExceptions.maxSize
+    override val maxSize: Int
+        get() = this@mapExceptions.maxSize
 
-        override val writablePacket: BytePacketBuilder
-            get() = this@mapExceptions.writablePacket
+    override val writablePacket: BytePacketBuilder
+        get() = this@mapExceptions.writablePacket
 
-        override val isClosedForWrite: Boolean
-            get() = this@mapExceptions.isClosedForWrite
+    override val isClosedForWrite: Boolean
+        get() = this@mapExceptions.isClosedForWrite
 
-        override val totalBytesWritten: Long
-            get() = this@mapExceptions.totalBytesWritten
+    override val totalBytesWritten: Long
+        get() = this@mapExceptions.totalBytesWritten
 
-        override val closedCause: Throwable?
-            get() = this@mapExceptions.closedCause
+    override val closedCause: Throwable?
+        get() = this@mapExceptions.closedCause
 
-        override fun close(cause: Throwable?): Boolean {
-            return this@mapExceptions.close(block(cause))
-        }
-
-        override fun flush() {
-            this@mapExceptions.flush()
-        }
+    override suspend fun close() {
+        this@mapExceptions.close()
     }
+
+    override fun cancel(cause: Throwable?): Boolean {
+        return this@mapExceptions.cancel(block(cause))
+    }
+
+    override suspend fun flush() {
+        this@mapExceptions.flush()
+    }
+}

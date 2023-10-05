@@ -146,7 +146,7 @@ internal class RequestBodyHandler(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun consumeAndReleaseQueue() {
+    private suspend fun consumeAndReleaseQueue() {
         while (!queue.isEmpty) {
             val e = try {
                 queue.tryReceive().getOrNull()
@@ -188,7 +188,8 @@ internal class RequestBodyHandler(
     }
 
     override fun handlerRemoved(ctx: ChannelHandlerContext?) {
-        if (queue.close() && job.isCompleted) {
+        if (!queue.close() || !job.isCompleted) return
+        launch {
             consumeAndReleaseQueue()
             handlerJob.cancel()
         }

@@ -25,7 +25,11 @@ internal fun ByteReadChannel.observable(
             listener(bytesSend, contentLength)
         }
         val closedCause = this@observable.closedCause
-        channel.close(closedCause)
+        if (closedCause != null) {
+            channel.cancel(closedCause)
+        } else {
+            channel.close()
+        }
         if (closedCause == null && bytesSend == 0L) {
             listener(bytesSend, contentLength)
         }

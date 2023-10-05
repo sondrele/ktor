@@ -153,8 +153,10 @@ internal class ApacheResponseConsumer(
     }
 
     internal fun close() {
-        channel.close()
-        consumerJob.complete()
+        launch {
+            channel.close()
+            consumerJob.complete()
+        }
     }
 
     override fun getContent() = Unit

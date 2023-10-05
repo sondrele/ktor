@@ -151,11 +151,9 @@ private fun <S : CoroutineScope> CoroutineScope.launchChannel(
             }
 
             channel.cancel(cause)
+        } finally {
+            channel.close()
         }
-    }
-
-    job.invokeOnCompletion { cause ->
-        channel.close(cause)
     }
 
     return ChannelJob(job, channel)

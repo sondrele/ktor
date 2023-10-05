@@ -31,9 +31,10 @@ internal class MemoryCache(
             channel.writeFully(buffer, 0, size)
         }
 
-        if (body.closedCause != null) {
-            cause = body.closedCause
-            channel.close(body.closedCause)
+        val closedCause: Throwable? = body.closedCause
+        if (closedCause != null) {
+            cause = closedCause
+            channel.cancel(closedCause)
         }
 
         fullBody = packet.build().readBytes()

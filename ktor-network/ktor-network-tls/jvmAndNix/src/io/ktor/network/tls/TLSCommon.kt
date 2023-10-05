@@ -38,7 +38,7 @@ public suspend fun Connection.tls(
         openTLSSession(socket, input, output, config, coroutineContext)
     } catch (cause: Throwable) {
         input.cancel(cause)
-        output.close(cause)
+        output.cancel(cause)
         socket.close()
         throw cause
     }

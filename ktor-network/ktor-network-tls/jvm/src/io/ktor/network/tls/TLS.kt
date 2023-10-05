@@ -23,7 +23,7 @@ public actual suspend fun Socket.tls(
         openTLSSession(this, reader, writer, config, coroutineContext)
     } catch (cause: Throwable) {
         reader.cancel(cause)
-        writer.close(cause)
+        writer.cancel(cause)
         close()
         throw cause
     }

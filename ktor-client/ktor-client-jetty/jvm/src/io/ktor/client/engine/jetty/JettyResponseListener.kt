@@ -128,11 +128,13 @@ internal class JettyResponseListener(
             } catch (cause: Throwable) {
                 callback.failed(cause)
                 session.endPoint.close()
+                channel.cancel(cause)
                 throw cause
+            } finally {
+                channel.close()
             }
         }
-    }.invokeOnCompletion { cause ->
-        channel.close(cause)
+    }.invokeOnCompletion {
         backendChannel.close()
         GlobalScope.launch {
             for ((_, callback) in backendChannel) {
