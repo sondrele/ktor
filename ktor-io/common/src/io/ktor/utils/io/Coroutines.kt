@@ -42,13 +42,6 @@ public fun CoroutineScope.reader(
 ): ReaderJob = launchChannel(coroutineContext, channel, attachJob = false, block = block)
 
 @Suppress("DEPRECATION")
-public fun CoroutineScope.reader(
-    coroutineContext: CoroutineContext = EmptyCoroutineContext,
-    autoFlush: Boolean = false,
-    block: suspend ReaderScope.() -> Unit
-): ReaderJob = launchChannel(coroutineContext, ByteChannel(autoFlush), attachJob = true, block = block)
-
-@Suppress("DEPRECATION")
 @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
 @Deprecated("Use scope.reader instead")
 public fun reader(
@@ -85,13 +78,6 @@ public fun CoroutineScope.writer(
     channel: ByteChannel,
     block: suspend WriterScope.() -> Unit
 ): WriterJob = launchChannel(coroutineContext, channel, attachJob = false, block = block)
-
-@Suppress("DEPRECATION")
-public fun CoroutineScope.writer(
-    coroutineContext: CoroutineContext = EmptyCoroutineContext,
-    autoFlush: Boolean = false,
-    block: suspend WriterScope.() -> Unit
-): WriterJob = launchChannel(coroutineContext, ByteChannel(autoFlush), attachJob = true, block = block)
 
 @Suppress("DEPRECATION")
 @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)

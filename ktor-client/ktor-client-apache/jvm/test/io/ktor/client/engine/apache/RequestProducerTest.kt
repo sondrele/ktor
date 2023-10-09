@@ -226,7 +226,7 @@ private class TestEncoder : ContentEncoder {
         src.limit()
     }
 
-    override fun complete() {
+    override fun complete() = runBlocking {
         channel.close()
     }
 

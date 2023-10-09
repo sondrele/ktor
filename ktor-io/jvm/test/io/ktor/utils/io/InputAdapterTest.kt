@@ -4,12 +4,9 @@
 
 package io.ktor.utils.io
 
-import io.ktor.utils.io.internal.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.*
-import org.junit.*
 import kotlin.test.*
-import kotlin.test.Test
 
 class InputAdapterTest {
     private val ch = ByteChannel(true)
@@ -20,14 +17,14 @@ class InputAdapterTest {
     }
 
     @Test
-    fun testClosedReadSingle() {
+    fun testClosedReadSingle() = runBlocking {
         ch.close()
         val s = ch.toInputStream()
         assertEquals(-1, s.read())
     }
 
     @Test
-    fun testClosedReadBuffer() {
+    fun testClosedReadBuffer() = runBlocking {
         ch.close()
         val s = ch.toInputStream()
         assertEquals(-1, s.read(ByteArray(100)))

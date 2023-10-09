@@ -29,7 +29,7 @@ class ReadRemainingWithoutExceptionByteChannelCloseTest : ByteChannelCloseTest(
 
 abstract class ByteChannelCloseTest(
     private val expectedExceptionClass: KClass<out Throwable>?,
-    private val closeChannel: ByteChannel.() -> Unit,
+    private val closeChannel: suspend ByteChannel.() -> Unit,
     private val readFromChannel: suspend ByteChannel.() -> Unit
 ) : ByteChannelTestBase() {
 

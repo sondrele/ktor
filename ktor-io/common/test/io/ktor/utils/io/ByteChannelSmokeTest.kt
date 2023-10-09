@@ -11,7 +11,7 @@ import kotlin.test.*
 open class ByteChannelSmokeTest : ByteChannelTestBase() {
 
     @Test
-    fun simpleSmokeTest() {
+    fun simpleSmokeTest() = runTest {
         val bc = ByteChannel(false)
         bc.close()
     }
@@ -636,7 +636,8 @@ open class ByteChannelSmokeTest : ByteChannelTestBase() {
     @Test
     fun testConstruct() = runTest {
         val channel = ByteReadChannel(ByteArray(2))
-        channel.readRemaining().use { rem ->
+        val readRemaining = channel.readRemaining()
+        readRemaining.use { rem ->
             rem.discardExact(2)
         }
     }

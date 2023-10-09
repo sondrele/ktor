@@ -16,7 +16,7 @@ public fun ByteReadChannel(packet: ByteReadPacket): ByteReadChannel = object : B
 
     override fun exhausted(): Boolean {
         closedCause?.let { throw it }
-        return packet.isEmpty
+        return true
     }
 
     private val _closedCause = atomic<Throwable?>(null)

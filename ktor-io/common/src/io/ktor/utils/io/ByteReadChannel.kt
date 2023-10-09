@@ -1,8 +1,6 @@
 package io.ktor.utils.io
 
-import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
 
 /**
  * Channel for asynchronous reading of sequences of bytes.
@@ -21,9 +19,10 @@ public interface ByteReadChannel {
 
     /**
      * Checks if the channel is exhausted, meaning there are no more bytes available for [awaitContent].
+     * It still can have some bytes in the [readablePacket].
      *
      * @return true if the channel is exhausted, false otherwise
-     * @throws if the channel has been cancelled with exception
+     * @throws [closedCause] if the channel has been cancelled with exception
      */
     public fun exhausted(): Boolean
 
