@@ -6,7 +6,6 @@ package io.ktor.util.reflect
 
 import kotlin.reflect.*
 
-@AllowDifferentMembersInActual
 public actual typealias Type = java.lang.reflect.Type
 
 @PublishedApi

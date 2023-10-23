@@ -14,7 +14,6 @@ public actual fun Charsets.forName(name: String): Charset = Charset.forName(name
  */
 public actual fun Charsets.isSupported(name: String): Boolean = Charset.isSupported(name)
 
-@AllowDifferentMembersInActual
 public actual abstract class Charset(internal val _name: String) {
     public actual abstract fun newEncoder(): CharsetEncoder
     public actual abstract fun newDecoder(): CharsetDecoder
@@ -65,7 +64,6 @@ public actual val Charset.name: String get() = _name
 
 // -----------------------
 
-@AllowDifferentMembersInActual
 public actual abstract class CharsetEncoder(internal val _charset: Charset)
 private data class CharsetEncoderImpl(private val charset: Charset) : CharsetEncoder(charset)
 
@@ -115,7 +113,6 @@ internal actual fun CharsetEncoder.encodeComplete(dst: Buffer): Boolean = true
 
 // ----------------------------------------------------------------------
 
-@AllowDifferentMembersInActual
 public actual abstract class CharsetDecoder(internal val _charset: Charset)
 
 private data class CharsetDecoderImpl(private val charset: Charset) : CharsetDecoder(charset)

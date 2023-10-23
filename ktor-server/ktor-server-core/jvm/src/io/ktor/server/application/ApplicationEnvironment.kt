@@ -12,7 +12,6 @@ import kotlin.coroutines.*
 /**
  * Represents an environment in which [Application] runs
  */
-@AllowDifferentMembersInActual
 public actual interface ApplicationEnvironment {
 
     /**

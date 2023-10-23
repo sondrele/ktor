@@ -13,7 +13,6 @@ import java.net.*
  *
  * @throws UnresolvedAddressException if the [hostname] cannot be resolved.
  */
-@AllowDifferentMembersInActual
 public actual typealias NetworkAddress = SocketAddress
 
 public actual val NetworkAddress.hostname: String

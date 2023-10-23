@@ -6,7 +6,6 @@ package io.ktor.network.sockets
 
 import java.lang.reflect.*
 
-@AllowDifferentMembersInActual
 public actual sealed class SocketAddress {
     internal abstract val address: java.net.SocketAddress
 }
