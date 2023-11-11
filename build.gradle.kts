@@ -53,6 +53,9 @@ buildscript {
     }
 }
 
+val kotlinVersion = project.findProperty("kotlin_version") as? String
+println("Starting build with  Kotlin version $kotlinVersion")
+
 val releaseVersion: String? by extra
 val eapVersion: String? by extra
 val native_targets_enabled: Boolean by extra
@@ -92,7 +95,6 @@ apply(from = "gradle/compatibility.gradle")
 plugins {
     id("org.jetbrains.dokka") version "1.9.10" apply false
     id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.13.2"
-    id("kotlinx-atomicfu") version "0.22.0" apply false
     id("com.osacky.doctor") version "0.9.0"
 }
 
