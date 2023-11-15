@@ -20,9 +20,9 @@ suspend fun List<PartData>.makeString(): String = buildString {
     list.forEach {
         append("${it.name!!}\n")
         val content = when (it) {
-            is PartData.FileItem -> error("Not implemented")
+            is PartData.FileItem -> error("FileItem is not supported in test server")
             is PartData.FormItem -> it.value
-            is PartData.BinaryItem -> error("Not implemented")
+            is PartData.BinaryItem -> error("BinaryItem is not supported in test server")
             is PartData.BinaryChannelItem ->filenameContentTypeAndContentString(it.provider, it.headers)
         }
 
