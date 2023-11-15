@@ -747,29 +747,17 @@ class RoutingResolveTest {
         val prefixChild = routing.route("/foo/{param...}") {
             handle {}
         }
-
-        assertTrue(resolve(routing, "/foo") is RoutingResolveResult.Failure)
-
-        resolve(routing, "/foo/").let { result ->
+        fun String.assertResolvedTo(vararg segments: String) {
+            val result = resolve(routing, this)
             assertTrue(result is RoutingResolveResult.Success)
             assertSame(prefixChild, result.route)
-            assertEquals("", result.parameters["param"])
+            assertEquals(listOf(*segments), result.parameters.getAll("param"))
         }
-        resolve(routing, "/foo/bar/").let { result ->
-            assertTrue(result is RoutingResolveResult.Success)
-            assertSame(prefixChild, result.route)
-            assertEquals(listOf("bar", ""), result.parameters.getAll("param"))
-        }
-        resolve(routing, "/foo/bar/baz").let { result ->
-            assertTrue(result is RoutingResolveResult.Success)
-            assertSame(prefixChild, result.route)
-            assertEquals(listOf("bar", "baz"), result.parameters.getAll("param"))
-        }
-        resolve(routing, "/foo/bar/baz/").let { result ->
-            assertTrue(result is RoutingResolveResult.Success)
-            assertSame(prefixChild, result.route)
-            assertEquals(listOf("bar", "baz", ""), result.parameters.getAll("param"))
-        }
+        "/foo".assertResolvedTo()
+        "/foo/".assertResolvedTo("")
+        "/foo/bar/".assertResolvedTo("bar", "")
+        "/foo/bar/baz".assertResolvedTo("bar", "baz")
+        "/foo/bar/baz/".assertResolvedTo("bar", "baz", "")
     }
 
     @Test
